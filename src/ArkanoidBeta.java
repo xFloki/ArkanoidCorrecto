@@ -16,7 +16,8 @@ public class ArkanoidBeta extends GraphicsProgram{
 	private static int N_COLUMNAS = 16;
 
 	private static int ALTO_LADRILLO = 20;
-	
+
+	//creamos bloques de ladrillos
 	public void crearLadrillos(){
 		int ANCHO_LADRILLO = getWidth()/N_COLUMNAS;
 		for ( int i =0; i<N_FILAS; i++){
