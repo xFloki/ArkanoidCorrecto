@@ -1,3 +1,9 @@
+/*
+ * Autor: Alejandro Dietta Martin
+ * ------------------------------
+ * 
+ */
+
 import java.awt.event.MouseEvent;
 
 import acm.program.*;
