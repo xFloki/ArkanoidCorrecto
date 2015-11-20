@@ -1,12 +1,16 @@
 import java.awt.event.MouseEvent;
 
 import acm.program.*;
+import acm.util.RandomGenerator;
 import acm.graphics.*;
 
 public class ArkanoidBeta extends GraphicsProgram{
 	
+	GImage fondo = new GImage("PAISAJUEGO5.png");
+	
+	RandomGenerator aleatorio = new RandomGenerator();
 
-	private static int N_FILAS = 6;
+	private static int N_FILAS = 16;
 	private static int N_COLUMNAS = 16;
 	private static int ANCHO_LADRILLO = 800 / N_COLUMNAS;
 	private static int ALTO_LADRILLO = 20;
@@ -14,10 +18,11 @@ public class ArkanoidBeta extends GraphicsProgram{
 	private static int ANCHO_PLATAFORMA = 120;
 	private static int ALTO_PLATAFORMA = 20;
 	
-	private static int DIMENSION_PELOTA = 15;
+	private static int DIMENSION_PELOTA = 20;
 	
 	GRect plataforma = new GRect(ANCHO_PLATAFORMA, ALTO_PLATAFORMA);
 	GOval pelota = new GOval(DIMENSION_PELOTA, DIMENSION_PELOTA);
+	GRect ladrillo = new GRect(ANCHO_LADRILLO, ALTO_LADRILLO);
 	
 	double pelotaX = 3;
 	double pelotaY = -3;
@@ -27,20 +32,49 @@ public class ArkanoidBeta extends GraphicsProgram{
 	
 	public void init(){
 		setSize(800,600);
+		add(fondo);
+		fondo.scale(1,2);
 		addMouseListeners();
 		crearLadrillos();
 		crearPlataforma();
 		crearPelota();
+
 	}
 	
 	public void run(){
+		waitForClick();
 		while(true){
+			plataforma.setLocation(pelota.getX() - plataforma.getWidth()/2, 480);	
 			pelota.move(pelotaX, pelotaY);
+			pause(10);
 			chequeaColision();
-			pause(20);
 		}
 
 		
+	}
+	
+	private boolean chequeaLadrillo(){ 
+		if (getElementAt(pelota.getX(), pelota.getY()-3)!= fondo){
+			pelotaY = -pelotaY;	
+			remove(getElementAt(pelota.getX(), pelota.getY()+ -3));
+		
+		}
+		else if (getElementAt(pelota.getX()+DIMENSION_PELOTA, pelota.getY()+DIMENSION_PELOTA)!= fondo){
+			pelotaX = -pelotaX;	
+			remove(getElementAt(pelota.getX()+DIMENSION_PELOTA, pelota.getY()+DIMENSION_PELOTA));
+		}
+		else if (getElementAt(pelota.getX()+DIMENSION_PELOTA, pelota.getY()-3)!= fondo){
+			pelotaY = -pelotaY;	
+			remove(getElementAt(pelota.getX()+DIMENSION_PELOTA, pelota.getY()+ -3)); 	
+		}
+		else  if (getElementAt(pelota.getX(), pelota.getY()+DIMENSION_PELOTA)!= fondo){
+			pelotaX = -pelotaX;	
+			remove(getElementAt(pelota.getX(), pelota.getY()+DIMENSION_PELOTA));
+						
+		}else {
+			return false;
+		} 
+		return true;
 	}
 	
 	private void chequeaColision(){
@@ -48,7 +82,11 @@ public class ArkanoidBeta extends GraphicsProgram{
 			//chequeo si toca con el cursor
 			if(!chequeaCursor()){
 				//chequeaLadrillos();
+			
+				if(!chequeaLadrillo()){
+				}
 			}
+			
 		}
 
 	}
@@ -100,7 +138,7 @@ public class ArkanoidBeta extends GraphicsProgram{
 	
 	private void crearPelota(){
 		double pelotaX = plataforma.getX() + ANCHO_PLATAFORMA;
-		double pelotaY = plataforma.getY();
+		double pelotaY = plataforma.getY()- 30;
 		
 		
 		add(pelota);
@@ -110,7 +148,6 @@ public class ArkanoidBeta extends GraphicsProgram{
 	private void pelotaMoved(){
 		while(true){
 		pelota.move(pelotaX, pelotaY);
-		pause(4);
 		}
 	}
 	
@@ -120,14 +157,24 @@ public class ArkanoidBeta extends GraphicsProgram{
 		
 		
 	}
-	
 	private void crearLadrillos(){
-		for ( int i =0; i<N_FILAS; i++){
-			for( int j=0; j<N_COLUMNAS; j++){
-				GRect ladrillo = new GRect(ANCHO_LADRILLO, ALTO_LADRILLO);
-				add(ladrillo);
-				ladrillo.setLocation(j*ANCHO_LADRILLO, i*ALTO_LADRILLO+40);
+	for ( int j=0; j < N_FILAS; j++){
+		for (int i=0; i < N_COLUMNAS - j; i++){
+			GRect ladrillo = ladrillo = new GRect(ANCHO_LADRILLO, ALTO_LADRILLO);
+			add(ladrillo, ANCHO_LADRILLO*j/2 + ANCHO_LADRILLO*i, ALTO_LADRILLO * j);
+			
 			}
 		}
 	}
+
+	
+//	private void crearLadrillos(){
+//		for ( int i =0; i<N_FILAS; i++){
+//			for( int j=0; j<N_COLUMNAS; j++){
+//				GRect ladrillo = new GRect(ANCHO_LADRILLO, ALTO_LADRILLO);
+//				add(ladrillo);
+//				ladrillo.setLocation(j*ANCHO_LADRILLO, i*ALTO_LADRILLO+40);
+//			}
+//		}
+//	}
 }
